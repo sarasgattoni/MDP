@@ -1,5 +1,7 @@
 package it.unicam.cs.mpgc.rpg125676.model.content;
 
+import it.unicam.cs.mpgc.rpg125676.model.entity.player.Player;
+import it.unicam.cs.mpgc.rpg125676.model.game.GameSettings;
 
 import java.io.Serializable;
 
@@ -17,5 +19,12 @@ public interface RoomContent extends Serializable {
 
     String getDescription();
 
-
+    /**
+     * Applies the effect produced when this content is discovered.
+     *
+     * @param player player discovering the content
+     * @param settings game configuration
+     * @return discovery result
+     */
+    ContentDiscovery discover(Player player, GameSettings settings);
 }

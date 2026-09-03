@@ -24,5 +24,21 @@ public class EmptyContent extends AbstractRoomContent {
         super(ContentType.EMPTY, "Nothing", description);
     }
 
+    /**
+     * Resolves the discovery of an empty room content.
+     * No gameplay effect is applied to the player and the discovery
+     * is immediately completed.
+     * @param player player discovering the content
+     * @param settings current game configuration
+     * @return the completed discovery result
+     * @throws NullPointerException if player or settings is null
+     */
+    @Override
+    public ContentDiscovery discover(Player player, GameSettings settings) {
+        Objects.requireNonNull(player);
+        Objects.requireNonNull(settings);
+
+        return ContentDiscovery.completed(getDescription());
+    }
 
 }

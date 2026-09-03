@@ -22,6 +22,30 @@ public class Medicine extends AbstractRoomContent {
     public Medicine(String description) {
         super(ContentType.MEDICINE, "Medicine", description);
     }
+    /**
+     * Applies the effect of discovering the medicine.
+     * The player's lucidity is restored by the amount specified in
+     * the current game configuration. The discovery is then completed
+     * without requiring an additional decision.
+     * @param player player discovering the medicine
+     * @param settings current game configuration
+     * @return the completed discovery result
+     * @throws NullPointerException if player or settings is null
+     */
+    @Override
+    public ContentDiscovery discover(Player player, GameSettings settings) {
+        Objects.requireNonNull(player);
+        Objects.requireNonNull(settings);
 
+        int healing =
+                settings
+                        .player()
+                        .medicineHealing();
+        player
+                .getStats()
+                .recoverLucidity(healing);
+
+        return ContentDiscovery.completed(getDescription() + " You recovered " + healing + " lucidity.");
+    }
 
 }

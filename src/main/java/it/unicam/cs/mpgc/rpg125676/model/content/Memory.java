@@ -38,5 +38,29 @@ public class Memory extends AbstractRoomContent {
         return sequenceNumber;
     }
 
+    /**
+     * Applies the effect of discovering this memory.
+     * The memory is registered by the player and a new
+     * {@link MemoryAttributeDecision} is created. The bonus associated
+     * with the decision is obtained from the current game configuration.
+     * @param player player discovering the memory
+     * @param settings current game configuration
+     * @return a discovery result containing the required attribute decision
+     * @throws NullPointerException if player or settings is null
+     */
+    @Override
+    public ContentDiscovery discover(Player player, GameSettings settings) {
+        Objects.requireNonNull(player);
+        Objects.requireNonNull(settings);
+        player.registerMemoryFound();
+        int bonus =
+                settings
+                        .player()
+                        .memoryAttributeBonus();
+
+        MemoryAttributeDecision decision = new MemoryAttributeDecision(bonus);
+
+        return ContentDiscovery.requiringDecision(getDescription(), decision);
+    }
 
 }
