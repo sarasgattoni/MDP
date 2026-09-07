@@ -30,6 +30,12 @@ public class JsonHouseLoader implements HouseLoader {
     private final Gson gson;
     private final String resourcePath;
 
+    /**
+     * Creates a house loader for the supplied resource path.
+     *
+     * @param resourcePath classpath path of the house JSON resource
+     * @throws IllegalArgumentException if resourcePath is null or blank
+     */
     public JsonHouseLoader(String resourcePath) {
         if (resourcePath == null || resourcePath.isBlank()) {
             throw new IllegalArgumentException("Resource path cannot be blank");
