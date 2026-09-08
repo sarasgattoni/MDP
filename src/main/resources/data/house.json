@@ -1,0 +1,136 @@
+{
+  "rooms": [
+    {
+      "id": "entrance",
+      "name": "Entrance",
+      "searchable": false,
+      "role": "START",
+      "presenceStartAllowed": false,
+      "connections": [
+        "hallway",
+        "living_room"
+      ]
+    },
+    {
+      "id": "hallway",
+      "name": "Hallway",
+      "searchable": true,
+      "role": "STANDARD",
+      "presenceStartAllowed": false,
+      "connections": [
+        "entrance",
+        "kitchen",
+        "study",
+        "stairs"
+      ]
+    },
+    {
+      "id": "kitchen",
+      "name": "Kitchen",
+      "searchable": true,
+      "role": "STANDARD",
+      "presenceStartAllowed": false,
+      "connections": [
+        "hallway",
+        "pantry"
+      ]
+    },
+    {
+      "id": "pantry",
+      "name": "Pantry",
+      "searchable": true,
+      "role": "STANDARD",
+      "presenceStartAllowed": false,
+      "connections": [
+        "kitchen"
+      ]
+    },
+    {
+      "id": "living_room",
+      "name": "Living Room",
+      "searchable": true,
+      "role": "STANDARD",
+      "presenceStartAllowed": false,
+      "connections": [
+        "entrance",
+        "study"
+      ]
+    },
+    {
+      "id": "study",
+      "name": "Study",
+      "searchable": true,
+      "role": "STANDARD",
+      "presenceStartAllowed": false,
+      "connections": [
+        "living_room",
+        "hallway"
+      ]
+    },
+    {
+      "id": "stairs",
+      "name": "Stairs",
+      "searchable": false,
+      "role": "HUB",
+      "presenceStartAllowed": false,
+      "connections": [
+        "hallway",
+        "bathroom",
+        "parents_bedroom",
+        "child_bedroom",
+        "attic"
+      ]
+    },
+    {
+      "id": "bathroom",
+      "name": "Bathroom",
+      "searchable": true,
+      "role": "STANDARD",
+      "presenceStartAllowed": true,
+      "connections": [
+        "stairs"
+      ]
+    },
+    {
+      "id": "parents_bedroom",
+      "name": "Parents' Bedroom",
+      "searchable": true,
+      "role": "STANDARD",
+      "presenceStartAllowed": true,
+      "connections": [
+        "stairs",
+        "locked_room"
+      ]
+    },
+    {
+      "id": "child_bedroom",
+      "name": "Child's Bedroom",
+      "searchable": true,
+      "role": "STANDARD",
+      "presenceStartAllowed": true,
+      "connections": [
+        "stairs"
+      ]
+    },
+    {
+      "id": "attic",
+      "name": "Attic",
+      "searchable": true,
+      "role": "STANDARD",
+      "presenceStartAllowed": false,
+      "connections": [
+        "stairs"
+      ]
+    },
+    {
+      "id": "locked_room",
+      "name": "Locked Room",
+      "searchable": false,
+      "role": "FINAL",
+      "presenceStartAllowed": false,
+      "connections": [
+        "parents_bedroom"
+      ]
+    }
+  ]
+}
