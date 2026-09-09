@@ -88,7 +88,7 @@ public record GameSettings(
                         3,
                         4
                 ),
-                new DecoyConfig(4, 1),
+                new DecoyConfig(4),
                 new ContentConfig(
                         3,
                         2,
@@ -192,11 +192,10 @@ public record GameSettings(
     /**
      * Defines the configuration of active decoys.
      *
-     * @param duration number of turns during which a decoy produces noise
-     * @param maxActiveDecoys maximum number of decoys that may be active
-     *                        at the same time
+     * @param holdTurns number of complete turns for which the Presence remains
+     *                  in the decoy room after reaching it
      */
-    public record DecoyConfig(int duration, int maxActiveDecoys) implements Serializable{}
+    public record DecoyConfig(int holdTurns) implements Serializable{}
 
     /**
      * Defines how many contents of each type are created for a game session.

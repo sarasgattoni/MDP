@@ -2,10 +2,10 @@ package it.unicam.cs.mpgc.rpg125676.model.game;
 
 import it.unicam.cs.mpgc.rpg125676.model.entity.player.Player;
 import it.unicam.cs.mpgc.rpg125676.model.entity.presence.Presence;
+import it.unicam.cs.mpgc.rpg125676.model.game.decoy.PlacedDecoy;
 import it.unicam.cs.mpgc.rpg125676.model.world.House;
 import it.unicam.cs.mpgc.rpg125676.model.world.Room;
 import it.unicam.cs.mpgc.rpg125676.model.game.decision.PendingDecision;
-import it.unicam.cs.mpgc.rpg125676.model.game.decoy.ActiveDecoy;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -37,7 +37,7 @@ public class GameState implements Serializable {
     private int turnCount;
     private int listenAvailableFromTurn;
     private boolean recoveryAvailable;
-    private ActiveDecoy activeDecoy;
+    private PlacedDecoy placedDecoy;
 
     /**
      * Creates a new game state with the supplied configuration,
@@ -205,12 +205,12 @@ public class GameState implements Serializable {
             throw new IllegalStateException("There is no pending decision");}
         pendingDecision = null;
     }
-    public boolean hasActiveDecoy() {
-        return activeDecoy != null;
+    public boolean hasPlacedDecoy() {
+        return placedDecoy != null;
     }
 
-    public Optional<ActiveDecoy> getActiveDecoy() {
-        return Optional.ofNullable(activeDecoy);
+    public Optional<PlacedDecoy> getPlacedDecoy() {
+        return Optional.ofNullable(placedDecoy);
     }
 
     /**
@@ -220,14 +220,14 @@ public class GameState implements Serializable {
      * @throws NullPointerException if decoy is null
      * @throws IllegalStateException if another decoy is already active
      */
-    public void placeDecoy(ActiveDecoy decoy) {
+    public void placeDecoy(PlacedDecoy decoy) {
         Objects.requireNonNull(decoy);
-        if (activeDecoy != null) {throw new IllegalStateException("A decoy is already active");}
-        activeDecoy = decoy;
+        if (placedDecoy != null) {throw new IllegalStateException("A decoy is already active");}
+        placedDecoy = decoy;
     }
 
-    public void clearActiveDecoy() {
-        activeDecoy = null;
+    public void clearPlacedDecoy() {
+        placedDecoy = null;
     }
 
     public boolean canListen() {
