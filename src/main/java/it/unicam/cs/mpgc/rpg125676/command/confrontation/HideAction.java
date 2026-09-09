@@ -31,11 +31,9 @@ public class HideAction extends AbstractConfrontationAction {
      * @throws NullPointerException if diceRoller is null
      */
     public HideAction(DiceRoller diceRoller) {
-        this.diceRoller =
-                Objects.requireNonNull(diceRoller);
+        this.diceRoller = Objects.requireNonNull(diceRoller);
 
-        this.random =
-                RandomGenerator.getDefault();
+        this.random = RandomGenerator.getDefault();
     }
 
     @Override
@@ -63,7 +61,9 @@ public class HideAction extends AbstractConfrontationAction {
             List<Room> adjacentRooms = List.copyOf(state.getHouse().getAdjacentRooms(state.getPresence().getCurrentRoom()));
             Room destination = adjacentRooms.get(random.nextInt(adjacentRooms.size()));
             state.getPresence().moveTo(destination);
-            state.getPresence().decreaseAttention(state.getSettings().confrontation().hideAttentionDecrease());
+            if (!state.isDecoyActive()) {
+                state.getPresence().decreaseAttention(state.getSettings().confrontation().hideAttentionDecrease());
+            }
             state.synchronizePhaseWithPositions();
 
             return ActionResult.silentSuccess("You disappeared from sight. " + "The Presence moves away.");

@@ -52,7 +52,9 @@ public class FacePresenceAction extends AbstractConfrontationAction {
 
         if (total >= threshold) {
             retreatPresence(state);
-            state.getPresence().resetAttention();
+            if (!state.isDecoyActive()) {
+                state.getPresence().resetAttention();
+            }
             state.synchronizePhaseWithPositions();
             return ActionResult.silentSuccess("You held your ground. " + "The Presence recoils into the darkness.");
         }

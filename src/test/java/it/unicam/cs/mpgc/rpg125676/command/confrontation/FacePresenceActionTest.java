@@ -9,6 +9,7 @@ import it.unicam.cs.mpgc.rpg125676.model.entity.presence.Presence;
 import it.unicam.cs.mpgc.rpg125676.model.game.GamePhase;
 import it.unicam.cs.mpgc.rpg125676.model.game.GameSettings;
 import it.unicam.cs.mpgc.rpg125676.model.game.GameState;
+import it.unicam.cs.mpgc.rpg125676.model.game.decoy.PlacedDecoy;
 import it.unicam.cs.mpgc.rpg125676.model.game.dice.DiceRoller;
 import it.unicam.cs.mpgc.rpg125676.model.world.DefaultHouse;
 import it.unicam.cs.mpgc.rpg125676.model.world.Room;
@@ -146,4 +147,15 @@ class FacePresenceActionTest {
         assertFalse(localState.isPlayerWithPresence());
     }
 
+    @Test
+    void successfulFaceShouldNotResetAttentionWithActiveDecoy() {
+        presence.increaseAttention(6);
+        PlacedDecoy decoy = new PlacedDecoy(presence.getCurrentRoom(), settings.decoy().holdTurns());
+        decoy.activate();
+        state.placeDecoy(decoy);
+        FacePresenceAction action = new FacePresenceAction(fixedDice(6));
+        action.execute(state);
+
+        assertEquals(6, presence.getAttention());
+    }
 }

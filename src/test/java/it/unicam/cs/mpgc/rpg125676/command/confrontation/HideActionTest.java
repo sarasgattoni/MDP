@@ -9,6 +9,7 @@ import it.unicam.cs.mpgc.rpg125676.model.entity.presence.Presence;
 import it.unicam.cs.mpgc.rpg125676.model.game.GamePhase;
 import it.unicam.cs.mpgc.rpg125676.model.game.GameSettings;
 import it.unicam.cs.mpgc.rpg125676.model.game.GameState;
+import it.unicam.cs.mpgc.rpg125676.model.game.decoy.PlacedDecoy;
 import it.unicam.cs.mpgc.rpg125676.model.game.dice.DiceRoller;
 import it.unicam.cs.mpgc.rpg125676.model.world.DefaultHouse;
 import it.unicam.cs.mpgc.rpg125676.model.world.Room;
@@ -130,5 +131,16 @@ class HideActionTest {
 
         assertEquals(ActionOutcome.REJECTED, result.outcome());
         assertFalse(result.consumesTurn());
+    }
+    @Test
+    void successfulHideShouldNotDecreaseAttentionWithActiveDecoy() {
+        presence.increaseAttention(8);
+        PlacedDecoy decoy = new PlacedDecoy(presence.getCurrentRoom(), settings.decoy().holdTurns());
+        decoy.activate();
+        state.placeDecoy(decoy);
+        HideAction action = new HideAction(fixedDice(6));
+        action.execute(state);
+
+        assertEquals(8, presence.getAttention());
     }
 }
