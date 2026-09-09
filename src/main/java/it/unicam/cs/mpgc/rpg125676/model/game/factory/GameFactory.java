@@ -7,6 +7,7 @@ import it.unicam.cs.mpgc.rpg125676.model.entity.player.Player;
 import it.unicam.cs.mpgc.rpg125676.model.entity.player.PlayerStats;
 import it.unicam.cs.mpgc.rpg125676.model.entity.player.inventory.PlayerInventory;
 import it.unicam.cs.mpgc.rpg125676.model.entity.presence.Presence;
+import it.unicam.cs.mpgc.rpg125676.model.entity.presence.behavior.DecoyAwarePresenceMovementStrategy;
 import it.unicam.cs.mpgc.rpg125676.model.entity.presence.behavior.PresenceStateResolver;
 import it.unicam.cs.mpgc.rpg125676.model.entity.presence.behavior.PresenceMovementStrategy;
 import it.unicam.cs.mpgc.rpg125676.model.entity.presence.behavior.ShortestPathPresenceMovementStrategy;
@@ -172,7 +173,8 @@ public class GameFactory {
         Objects.requireNonNull(state);
         PathFinder pathFinder = new BfsPathFinder();
         PresenceStateResolver stateResolver = new PresenceStateResolver(state.getSettings().presence());
-        PresenceMovementStrategy movement = new ShortestPathPresenceMovementStrategy(pathFinder, stateResolver);
+        PresenceMovementStrategy standardMovement = new ShortestPathPresenceMovementStrategy(pathFinder, stateResolver);
+        PresenceMovementStrategy movement = new DecoyAwarePresenceMovementStrategy(standardMovement);
         AttentionPolicy attentionPolicy = new StandardAttentionPolicy();
         GameEndEvaluator endEvaluator = new GameEndEvaluator();
         TurnProcessor turnProcessor = new TurnProcessor(state, attentionPolicy, movement, endEvaluator);

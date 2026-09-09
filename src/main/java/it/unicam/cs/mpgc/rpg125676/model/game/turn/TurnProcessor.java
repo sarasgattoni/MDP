@@ -5,7 +5,7 @@ import it.unicam.cs.mpgc.rpg125676.model.entity.presence.behavior.PresenceMoveme
 import it.unicam.cs.mpgc.rpg125676.model.game.GamePhase;
 import it.unicam.cs.mpgc.rpg125676.model.game.GameState;
 import it.unicam.cs.mpgc.rpg125676.model.game.attention.AttentionPolicy;
-import it.unicam.cs.mpgc.rpg125676.model.game.decoy.ActiveDecoy;
+import it.unicam.cs.mpgc.rpg125676.model.game.decoy.PlacedDecoy;
 import it.unicam.cs.mpgc.rpg125676.model.game.end.GameEndEvaluator;
 import it.unicam.cs.mpgc.rpg125676.model.world.Room;
 import java.util.Objects;
@@ -111,17 +111,12 @@ public class TurnProcessor {
 
         Room lastNoiseSource = actionResult.noiseSource().orElse(null);
 
-        if (state.hasActiveDecoy()) {
-            ActiveDecoy decoy = state.getActiveDecoy().orElseThrow();
+        if (state.hasPlacedDecoy()) {
+            PlacedDecoy decoy = state.getPlacedDecoy().orElseThrow();
 
-            boolean producesNoise = decoy.consumeNoiseTurn();
-            if (producesNoise) {
+            if (decoy.isRinging()) {
                 totalNoise += state.getSettings().noise().decoyNoise();
                 lastNoiseSource = decoy.getRoom();
-            }
-
-            if (decoy.isExpired()) {
-                state.clearActiveDecoy();
             }
         }
         if (totalNoise == 0) {
