@@ -4,6 +4,7 @@ import it.unicam.cs.mpgc.rpg125676.model.entity.player.Player;
 import it.unicam.cs.mpgc.rpg125676.model.entity.player.PlayerStats;
 import it.unicam.cs.mpgc.rpg125676.model.entity.player.inventory.PlayerInventory;
 import it.unicam.cs.mpgc.rpg125676.model.entity.presence.Presence;
+import it.unicam.cs.mpgc.rpg125676.model.game.decoy.PlacedDecoy;
 import it.unicam.cs.mpgc.rpg125676.model.world.DefaultHouse;
 import it.unicam.cs.mpgc.rpg125676.model.world.Room;
 import it.unicam.cs.mpgc.rpg125676.model.world.RoomRole;
@@ -19,18 +20,14 @@ class GameStateTest {
     @BeforeEach
     void setUp() {
         GameSettings settings = GameSettings.standard();
-
         Room entrance = new Room("entrance", "Entrance", false, RoomRole.STANDARD, false);
         Room hallway = new Room("hallway", "Hallway", true, RoomRole.STANDARD, false);
         DefaultHouse house = new DefaultHouse();
         house.addRoom(entrance);
         house.addRoom(hallway);
         house.connectRooms("entrance", "hallway");
-
-        Player player = new Player("Test Player", new PlayerStats(settings.player()),
-                        new PlayerInventory(), entrance, settings.content().memoryCount());
+        Player player = new Player("Test Player", new PlayerStats(settings.player()), new PlayerInventory(), entrance, settings.content().memoryCount());
         Presence presence = new Presence(hallway, settings.presence().minAttention(), settings.presence().maxAttention());
-
         state = new GameState(settings, house, player, presence);
     }
 
@@ -75,5 +72,18 @@ class GameStateTest {
         state.consumeRecovery();
         assertFalse(state.isRecoveryAvailable());
     }
+    @Test
+    void decoyShouldBeActiveOnlyWhileRinging() {
+        PlacedDecoy decoy = new PlacedDecoy(
+                state.getPlayer().getCurrentRoom(),
+                state.getSettings().decoy().holdTurns()
+        );
+        state.placeDecoy(decoy);
 
+        assertFalse(state.isDecoyActive());
+
+        decoy.activate();
+
+        assertTrue(state.isDecoyActive());
+    }
 }

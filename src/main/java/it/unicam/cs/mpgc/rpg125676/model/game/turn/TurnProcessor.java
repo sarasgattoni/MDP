@@ -65,19 +65,20 @@ public class TurnProcessor {
             state.advanceTurn();
             return;
         }
-        TurnNoise turnNoise = createTurnNoise(actionResult);
-
-        if (startingPhase == GamePhase.EXPLORATION) {
-            completeExplorationRules(turnNoise);
+        if (state.isDecoyActive()) {
+            completeDecoyRules(startingPhase);
         } else {
-            updateConfrontationNoiseTarget(turnNoise);
+            TurnNoise turnNoise = createTurnNoise(actionResult);
+            if (startingPhase == GamePhase.EXPLORATION) {
+                completeExplorationRules(turnNoise);
+            } else {
+                updateConfrontationNoiseTarget(turnNoise);
+            }
         }
         gameEndEvaluator.evaluate(state);
-
         if (!state.isFinished()) {
             state.synchronizePhaseWithPositions();
         }
-
         state.advanceTurn();
     }
 
@@ -108,17 +109,7 @@ public class TurnProcessor {
      */
     private TurnNoise createTurnNoise(ActionResult actionResult) {
         int totalNoise = actionResult.noise();
-
         Room lastNoiseSource = actionResult.noiseSource().orElse(null);
-
-        if (state.hasPlacedDecoy()) {
-            PlacedDecoy decoy = state.getPlacedDecoy().orElseThrow();
-
-            if (decoy.isRinging()) {
-                totalNoise += state.getSettings().noise().decoyNoise();
-                lastNoiseSource = decoy.getRoom();
-            }
-        }
         if (totalNoise == 0) {
             return TurnNoise.silent();
         }
@@ -141,5 +132,20 @@ public class TurnProcessor {
             return;
         }
         turnNoise.lastSource().ifPresent(state::setNoiseTarget);
+    }
+
+    /**
+     *  Applies the temporary turn rules used while a decoy is active.
+     * Attention remains unchanged and the decoy room stays as the
+     * Presence's only noise target.
+     *
+     * @param startingPhase phase in which the turn started
+     */
+    private void completeDecoyRules(GamePhase startingPhase) {
+        PlacedDecoy decoy = state.getPlacedDecoy().orElseThrow();
+        state.setNoiseTarget(decoy.getRoom());
+        if (startingPhase == GamePhase.EXPLORATION && !state.isFinished()) {
+            presenceMovement.move(state);
+        }
     }
 }

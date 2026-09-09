@@ -226,6 +226,16 @@ public class GameState implements Serializable {
         placedDecoy = decoy;
     }
 
+    /**
+     * Checks whether a placed decoy is currently controlling
+     * the Presence's behavior.
+     *
+     * @return true if the decoy is currently ringing
+     */
+    public boolean isDecoyActive() {
+        return placedDecoy != null && placedDecoy.isRinging();
+    }
+
     public void clearPlacedDecoy() {
         placedDecoy = null;
     }
