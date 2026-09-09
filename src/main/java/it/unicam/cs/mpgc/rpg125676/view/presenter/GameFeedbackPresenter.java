@@ -58,32 +58,36 @@ public class GameFeedbackPresenter {
 
     /**
      * Creates the feedback message describing the noise generated during a turn.
-     * The message also applies for decoy noise and the special Attention rule
-     * used during confrontation.
+     * While a decoy is active, the message reports that Attention is frozen
+     * instead of displaying the normal noise-based Attention feedback.
      *
      * @param result result of the player's action
      * @param state current game state
-     * @param decoyRings whether the decoy produces noise during the turn
+     * @param decoyActive whether the decoy produces noise during the turn
      * @param decoyRoom room containing the ringing decoy, if present
      * @param startingPhase phase in which the turn started
      * @return noise feedback message
      */
-    public String createNoiseFeedback(ActionResult result, GameState state, boolean decoyRings, Room decoyRoom, GamePhase startingPhase) {
+    public String createNoiseFeedback(ActionResult result, GameState state, boolean decoyActive, Room decoyRoom, GamePhase startingPhase) {
+        if (decoyActive) {
+            String location = decoyRoom == null ? "" : " in " + decoyRoom.getName();
+            return "DECOY RINGING" + location + " — Attention frozen.";
+        }
         if (startingPhase == GamePhase.CONFRONTATION) {
-            if (decoyRings && decoyRoom != null) {
+            if (decoyActive && decoyRoom != null) {
                 return "Alarm clock rings in " + decoyRoom.getName() + " — Attention rule suspended during confrontation.";
             }
             return "CONFRONTATION — Attention rule suspended.";
         }
         int totalNoise = result.noise();
-        if (decoyRings) {
+        if (decoyActive) {
             totalNoise += state.getSettings().noise().decoyNoise();
         }
         if (totalNoise == 0) {
             return "SILENT — Attention decreases.";
         }
         String message = "NOISE +" + totalNoise;
-        if (decoyRings && decoyRoom != null) {
+        if (decoyActive && decoyRoom != null) {
             message += " — Alarm clock rings in " + decoyRoom.getName();
         }
         return message;

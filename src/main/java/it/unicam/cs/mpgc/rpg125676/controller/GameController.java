@@ -9,6 +9,7 @@ import it.unicam.cs.mpgc.rpg125676.controller.service.GameSession;
 import it.unicam.cs.mpgc.rpg125676.model.entity.player.PlayerAttribute;
 import it.unicam.cs.mpgc.rpg125676.model.game.GamePhase;
 import it.unicam.cs.mpgc.rpg125676.model.game.GameState;
+import it.unicam.cs.mpgc.rpg125676.model.game.decoy.PlacedDecoy;
 import it.unicam.cs.mpgc.rpg125676.model.game.dice.DiceRoller;
 import it.unicam.cs.mpgc.rpg125676.model.game.engine.GameEngine;
 import it.unicam.cs.mpgc.rpg125676.model.world.Room;
@@ -129,14 +130,8 @@ public class GameController {
         GamePhase startingPhase = stateBefore.getPhase();
         Room presenceBeforeTurn = stateBefore.getPresence().getCurrentRoom();
 
-        boolean decoyWillRing = stateBefore.getPlacedDecoy()
-                .map(decoy -> decoy.isRinging())
-                .orElse(false)
-                || action instanceof ActivateDecoyAction;
-
-        Room decoyRoom = stateBefore.getPlacedDecoy()
-                .map(decoy -> decoy.getRoom())
-                .orElse(null);
+        boolean decoyActiveDuringTurn = stateBefore.isDecoyActive() || action instanceof ActivateDecoyAction;
+        Room decoyRoom = stateBefore.getPlacedDecoy().map(PlacedDecoy::getRoom).orElse(null);
         ActionResult result;
         try {
             result = engine.execute(action);
@@ -151,7 +146,7 @@ public class GameController {
         String noiseFeedback = null;
         if (result.consumesTurn()) {
             mainFeedback = feedbackPresenter.createMainFeedback(action, result, engine.getState(), diceRoller);
-            noiseFeedback = feedbackPresenter.createNoiseFeedback(result, engine.getState(), decoyWillRing, decoyRoom, startingPhase);
+            noiseFeedback = feedbackPresenter.createNoiseFeedback(result, engine.getState(), decoyActiveDuringTurn, decoyRoom, startingPhase);
         }
 
         resolvePendingDecision();
