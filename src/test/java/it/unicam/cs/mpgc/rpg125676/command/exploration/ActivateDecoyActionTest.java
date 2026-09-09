@@ -8,6 +8,7 @@ import it.unicam.cs.mpgc.rpg125676.model.entity.player.inventory.PlayerInventory
 import it.unicam.cs.mpgc.rpg125676.model.entity.presence.Presence;
 import it.unicam.cs.mpgc.rpg125676.model.game.GameSettings;
 import it.unicam.cs.mpgc.rpg125676.model.game.GameState;
+import it.unicam.cs.mpgc.rpg125676.model.game.decoy.PlacedDecoy;
 import it.unicam.cs.mpgc.rpg125676.model.world.DefaultHouse;
 import it.unicam.cs.mpgc.rpg125676.model.world.Room;
 import it.unicam.cs.mpgc.rpg125676.model.world.RoomRole;
@@ -16,66 +17,55 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PlaceDecoyActionTest {
+class ActivateDecoyActionTest {
 
     private GameState state;
-    private Player player;
     private Room study;
 
     @BeforeEach
     void setUp() {
         GameSettings settings = GameSettings.standard();
-
         study = new Room("study", "Study", true, RoomRole.STANDARD, false);
         Room attic = new Room("attic", "Attic", true, RoomRole.STANDARD, true);
-
         DefaultHouse house = new DefaultHouse();
         house.addRoom(study);
         house.addRoom(attic);
         house.connectRooms("study", "attic");
 
-        player = new Player("Test Player", new PlayerStats(settings.player()), new PlayerInventory(), study, settings.content().memoryCount());
-
+        Player player = new Player("Test Player", new PlayerStats(settings.player()), new PlayerInventory(), study, settings.content().memoryCount());
         Presence presence = new Presence(attic, settings.presence().minAttention(), settings.presence().maxAttention());
-
         state = new GameState(settings, house, player, presence);
     }
 
     @Test
-    void shouldPlaceInactiveDecoy() {
-        player.collectDecoy();
-
-        ActionResult result = new PlaceDecoyAction().execute(state);
+    void shouldActivatePlacedDecoy() {
+        PlacedDecoy decoy = new PlacedDecoy(study, 4);
+        state.placeDecoy(decoy);
+        ActionResult result = new ActivateDecoyAction().execute(state);
 
         assertTrue(result.succeeded());
-        assertEquals(0, player.getDecoyCount());
-        assertTrue(state.hasPlacedDecoy());
-
-        var decoy = state.getPlacedDecoy().orElseThrow();
-        assertEquals(study, decoy.getRoom());
-        assertFalse(decoy.isRinging());
+        assertTrue(result.consumesTurn());
+        assertEquals(0, result.noise());
+        assertTrue(decoy.isRinging());
     }
 
     @Test
-    void shouldRejectPlacementWithoutDecoy() {
-        ActionResult result = new PlaceDecoyAction().execute(state);
+    void shouldRejectWhenNoDecoyIsPlaced() {
+        ActionResult result = new ActivateDecoyAction().execute(state);
 
         assertEquals(ActionOutcome.REJECTED, result.outcome());
         assertFalse(result.consumesTurn());
-        assertFalse(state.hasPlacedDecoy());
     }
 
     @Test
-    void shouldRejectSecondPlacedDecoy() {
-        player.collectDecoy();
-        player.collectDecoy();
+    void shouldRejectAlreadyRingingDecoy() {
+        PlacedDecoy decoy = new PlacedDecoy(study, 4);
+        decoy.activate();
+        state.placeDecoy(decoy);
 
-        PlaceDecoyAction action = new PlaceDecoyAction();
-        action.execute(state);
-        ActionResult second = action.execute(state);
+        ActionResult result = new ActivateDecoyAction().execute(state);
 
-        assertEquals(ActionOutcome.REJECTED, second.outcome());
-        assertFalse(second.consumesTurn());
-        assertEquals(1, player.getDecoyCount());
+        assertEquals(ActionOutcome.REJECTED, result.outcome());
+        assertFalse(result.consumesTurn());
     }
 }
