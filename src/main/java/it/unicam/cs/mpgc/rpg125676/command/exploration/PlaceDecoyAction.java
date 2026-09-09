@@ -3,14 +3,14 @@ package it.unicam.cs.mpgc.rpg125676.command.exploration;
 import it.unicam.cs.mpgc.rpg125676.command.ActionResult;
 import it.unicam.cs.mpgc.rpg125676.model.entity.player.Player;
 import it.unicam.cs.mpgc.rpg125676.model.game.GameState;
-import it.unicam.cs.mpgc.rpg125676.model.game.decoy.ActiveDecoy;
+import it.unicam.cs.mpgc.rpg125676.model.game.decoy.PlacedDecoy;
 
 /**
  * Places one collected decoy in the player's current room.
  * The action requires an available decoy in the player's inventory
  * and no other active decoy in the game.
- * A successfully placed decoy remains silent during the placement
- * turn and starts producing noise on subsequent turns.
+ * Placement is silent and the decoy remains inactive until explicitly activated.
+ *
  */
 public class PlaceDecoyAction extends AbstractExplorationAction {
 
@@ -36,15 +36,15 @@ public class PlaceDecoyAction extends AbstractExplorationAction {
 
         if (!player.hasDecoy()) {return ActionResult.rejected("You do not have a decoy.");
         }
-        if (state.hasActiveDecoy()) {return ActionResult.rejected("Another decoy is already active.");
+        if (state.hasPlacedDecoy()) {return ActionResult.rejected("Another decoy is already active.");
         }
         boolean consumed = player.consumeDecoy();
         if (!consumed) {
             throw new IllegalStateException("Unable to consume the player's decoy");
         }
 
-        ActiveDecoy activeDecoy = new ActiveDecoy(player.getCurrentRoom(), state.getSettings().decoy().duration());
-        state.placeDecoy(activeDecoy);
+        PlacedDecoy placedDecoy = new PlacedDecoy(player.getCurrentRoom(), state.getSettings().decoy().holdTurns());
+        state.placeDecoy(placedDecoy);
 
         return ActionResult.silentSuccess("You placed the alarm clock in " + player.getCurrentRoom().getName() + ". It will start ringing next turn.");
     }
