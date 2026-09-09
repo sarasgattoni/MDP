@@ -27,7 +27,7 @@ public class PlayerPanel extends VBox {
     private final Label cautionValue = new Label();
     private final Label memoriesValue = new Label();
     private final Label decoysValue = new Label();
-    private final Label activeDecoyValue = new Label();
+    private final Label decoyStatusValue = new Label();
     private final Label phaseValue = new Label();
 
     private final StatusBar lucidityBar = new StatusBar(190);
@@ -47,9 +47,9 @@ public class PlayerPanel extends VBox {
         GridPane stats = createStatsGrid();
         HBox counters = createCounters();
 
-        Label activeTitle = label("ACTIVE DECOY", 11, VintageTheme.TEXT_MUTED, FontWeight.BOLD, false);
-        VintageTheme.label(activeDecoyValue, 12, Color.rgb(170, 160, 139), FontWeight.NORMAL, false);
-        activeDecoyValue.setWrapText(true);
+        Label decoyTitle = label("DECOY", 11, VintageTheme.TEXT_MUTED, FontWeight.BOLD, false);
+        VintageTheme.label(decoyStatusValue, 12, Color.rgb(170, 160, 139), FontWeight.NORMAL, false);
+        decoyStatusValue.setWrapText(true);
 
         Label mapTitle = label("HOUSE MAP", 11, VintageTheme.TEXT_MUTED, FontWeight.BOLD, false);
         houseMapView.setMaxWidth(Double.MAX_VALUE);
@@ -71,8 +71,8 @@ public class PlayerPanel extends VBox {
                 lucidityBar,
                 divider(),
                 counters,
-                activeTitle,
-                activeDecoyValue,
+                decoyTitle,
+                decoyStatusValue,
                 divider(),
                 mapTitle,
                 houseMapView,
@@ -100,17 +100,38 @@ public class PlayerPanel extends VBox {
         memoriesValue.setText(player.getMemoriesFound() + "/" + state.getSettings().content().memoryCount());
         decoysValue.setText(Integer.toString(player.getDecoyCount()));
         phaseValue.setText(state.getPhase().name().replace('_', ' '));
+        decoyStatusValue.setText(
+                state.getPlacedDecoy()
+                        .map(decoy -> {
+                            String roomName = decoy.getRoom().getName();
 
-        activeDecoyValue.setText(state.getActiveDecoy().map(decoy -> decoy.isJustPlaced() ? "Placed in " + decoy.getRoom().getName() : "Ringing in " + decoy.getRoom().getName() + " — " + decoy.getRemainingNoiseTurns() + " turn(s)").orElse("None"));
+                            if (!decoy.isRinging()) {
+                                return "Ready in " + roomName;
+                            }
+
+                            if (!decoy.hasPresenceReached()) {
+                                return "Ringing in " + roomName
+                                        + " — attracting Presence";
+                            }
+
+                            return "Ringing in " + roomName
+                                    + " — holding Presence ("
+                                    + decoy.getRemainingHoldTurns()
+                                    + " turn(s))";
+                        })
+                        .orElse("None")
+        );
 
         double progress = (double) stats.getLucidity() / state.getSettings().player().maxLucidity();
         lucidityBar.setProgress(progress);
         lucidityBar.setFillColor(progress > 0.6 ? VintageTheme.LUCIDITY_GOOD : progress > 0.3 ? VintageTheme.LUCIDITY_WARNING : VintageTheme.LUCIDITY_CRITICAL);
 
         houseMapView.setCurrentRoom(player.getCurrentRoom());
-        houseMapView.setActiveDecoyRoom(state.getActiveDecoy()
-                .map(decoy -> decoy.getRoom())
-                .orElse(null));
+        houseMapView.setDecoyRoom(
+                state.getPlacedDecoy()
+                        .map(decoy -> decoy.getRoom())
+                        .orElse(null)
+        );
     }
 
     public void setComposureTooltip(String text) {

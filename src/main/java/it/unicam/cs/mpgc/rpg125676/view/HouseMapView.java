@@ -53,7 +53,7 @@ public class HouseMapView extends Pane {
     private House house;
     private Room currentRoom;
     private Room visiblePresenceRoom;
-    private Room activeDecoyRoom;
+    private Room decoyRoom;
 
     public HouseMapView() {
         setMinHeight(190);
@@ -76,8 +76,8 @@ public class HouseMapView extends Pane {
         render();
     }
 
-    public void setActiveDecoyRoom(Room room) {
-        activeDecoyRoom = room;
+    public void setDecoyRoom(Room room) {
+        decoyRoom = room;
         render();
     }
 
@@ -169,8 +169,8 @@ public class HouseMapView extends Pane {
     }
 
     private void drawMarkers() {
-        if (activeDecoyRoom != null) {
-            drawMarker(activeDecoyRoom, "D", Color.rgb(142, 112, 65), 10, -16, false);
+        if (decoyRoom != null) {
+            drawMarker(decoyRoom, "D", Color.rgb(142, 112, 65), 10, -16, false);
         }
         if (visiblePresenceRoom != null) {
             drawMarker(visiblePresenceRoom, "P", Color.rgb(141, 57, 53), -18, -16, true);

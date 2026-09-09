@@ -2,6 +2,7 @@ package it.unicam.cs.mpgc.rpg125676.view.component;
 
 import it.unicam.cs.mpgc.rpg125676.model.game.GamePhase;
 import it.unicam.cs.mpgc.rpg125676.model.game.GameState;
+import it.unicam.cs.mpgc.rpg125676.model.game.decoy.PlacedDecoy;
 import it.unicam.cs.mpgc.rpg125676.model.world.Room;
 import it.unicam.cs.mpgc.rpg125676.model.world.RoomRole;
 import it.unicam.cs.mpgc.rpg125676.view.support.VintageTheme;
@@ -20,10 +21,6 @@ import javafx.util.StringConverter;
 
 /**
  * Displays the actions available to the player.
- *
- * The panel manages JavaFX controls and their availability according
- * to the current game state, while action execution is delegated
- * to the controller.
  */
 public class ActionPanel extends VBox {
 
@@ -112,7 +109,17 @@ public class ActionPanel extends VBox {
         destinations.setMaxWidth(Double.MAX_VALUE);
         VintageTheme.comboBox(destinations);
         configureDestinationRendering();
-        explorationBox.getChildren().addAll(destinationLabel, destinations, moveButton, searchButton, listenButton, catchBreathButton, placeDecoyButton, speakNameButton);
+        explorationBox.getChildren().addAll(
+                destinationLabel,
+                destinations,
+                moveButton,
+                searchButton,
+                listenButton,
+                catchBreathButton,
+                placeDecoyButton,
+                activateDecoyButton,
+                speakNameButton
+        );
     }
 
     private void buildConfrontationBox() {
@@ -134,8 +141,12 @@ public class ActionPanel extends VBox {
         searchButton.setDisable(!currentRoom.isSearchable() || currentRoom.isSearched());
         refreshListenButton(state);
         catchBreathButton.setDisable(!canCatchBreath(state));
-        placeDecoyButton.setDisable(state.hasActiveDecoy() || state.getPlayer().getDecoyCount() <= 0);
         speakNameButton.setDisable(!canSpeakName(state, currentRoom));
+        boolean hasPlacedDecoy = state.hasPlacedDecoy();
+        placeDecoyButton.setDisable(hasPlacedDecoy || state.getPlayer().getDecoyCount() <= 0);
+        boolean ringing = state.getPlacedDecoy().map(PlacedDecoy::isRinging).orElse(false);
+        activateDecoyButton.setDisable(!hasPlacedDecoy || ringing);
+        activateDecoyButton.setText(ringing ? "DECOY RINGING" : "ACTIVATE DECOY");
     }
 
     private void refreshListenButton(GameState state) {
@@ -192,6 +203,9 @@ public class ActionPanel extends VBox {
         VintageTheme.button(button, tone);
         return button;
     }
+    private final Button activateDecoyButton = createButton("ACTIVATE DECOY", VintageTheme.ButtonTone.ACTION);
+
+    public void onActivateDecoy(Runnable action) {activateDecoyButton.setOnAction(event -> action.run());}
 
     private static class RoomCell extends ListCell<Room> {
 

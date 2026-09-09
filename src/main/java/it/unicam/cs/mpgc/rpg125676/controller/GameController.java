@@ -4,12 +4,7 @@ import it.unicam.cs.mpgc.rpg125676.command.ActionResult;
 import it.unicam.cs.mpgc.rpg125676.command.GameAction;
 import it.unicam.cs.mpgc.rpg125676.command.confrontation.FacePresenceAction;
 import it.unicam.cs.mpgc.rpg125676.command.confrontation.HideAction;
-import it.unicam.cs.mpgc.rpg125676.command.exploration.CatchBreathAction;
-import it.unicam.cs.mpgc.rpg125676.command.exploration.ListenAction;
-import it.unicam.cs.mpgc.rpg125676.command.exploration.MoveAction;
-import it.unicam.cs.mpgc.rpg125676.command.exploration.PlaceDecoyAction;
-import it.unicam.cs.mpgc.rpg125676.command.exploration.SearchAction;
-import it.unicam.cs.mpgc.rpg125676.command.exploration.SpeakNameAction;
+import it.unicam.cs.mpgc.rpg125676.command.exploration.*;
 import it.unicam.cs.mpgc.rpg125676.controller.service.GameSession;
 import it.unicam.cs.mpgc.rpg125676.model.entity.player.PlayerAttribute;
 import it.unicam.cs.mpgc.rpg125676.model.game.GamePhase;
@@ -96,6 +91,7 @@ public class GameController {
         actions.onListen(() -> executeAction(new ListenAction()));
         actions.onCatchBreath(() -> executeAction(new CatchBreathAction()));
         actions.onPlaceDecoy(() -> executeAction(new PlaceDecoyAction()));
+        actions.onActivateDecoy(() -> executeAction(new ActivateDecoyAction()));
         actions.onSpeakName(() -> executeAction(new SpeakNameAction()));
         actions.onFacePresence(() -> executeAction(new FacePresenceAction(diceRoller)));
         actions.onHide(() -> executeAction(new HideAction(diceRoller)));
@@ -133,8 +129,14 @@ public class GameController {
         GamePhase startingPhase = stateBefore.getPhase();
         Room presenceBeforeTurn = stateBefore.getPresence().getCurrentRoom();
 
-        boolean decoyWillRing = stateBefore.getActiveDecoy().map(decoy -> !decoy.isJustPlaced() && !decoy.isExpired()).orElse(false);
-        Room decoyRoom = stateBefore.getActiveDecoy().map(decoy -> decoy.getRoom()).orElse(null);
+        boolean decoyWillRing = stateBefore.getPlacedDecoy()
+                .map(decoy -> decoy.isRinging())
+                .orElse(false)
+                || action instanceof ActivateDecoyAction;
+
+        Room decoyRoom = stateBefore.getPlacedDecoy()
+                .map(decoy -> decoy.getRoom())
+                .orElse(null);
         ActionResult result;
         try {
             result = engine.execute(action);
