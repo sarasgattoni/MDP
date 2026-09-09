@@ -21,11 +21,20 @@ public class PlacedDecoy implements Serializable {
     private boolean ringing;
     private boolean presenceReached;
 
+    /**
+     * Creates a decoy placed in the specified room.
+     * The decoy starts inactive and keeps the configured number of hold turns,
+     * which are consumed only after the Presence reaches the decoy room.
+     *
+     * @param room room in which the decoy is placed
+     * @param holdTurns number of turns for which the Presence is held after arrival
+     * @throws NullPointerException if room is null
+     * @throws IllegalArgumentException if holdTurns is not positive
+     */
     public PlacedDecoy(Room room, int holdTurns) {
         if (holdTurns <= 0) {
             throw new IllegalArgumentException("Decoy hold duration must be positive");
         }
-
         this.room = Objects.requireNonNull(room);
         this.remainingHoldTurns = holdTurns;
         this.ringing = false;
@@ -46,6 +55,13 @@ public class PlacedDecoy implements Serializable {
 
     public boolean hasPresenceReached() {
         return presenceReached;
+    }
+    
+    /**
+     * Records that the Presence has left the decoy room.
+     */
+    public void releasePresence() {
+        presenceReached = false;
     }
 
     /**

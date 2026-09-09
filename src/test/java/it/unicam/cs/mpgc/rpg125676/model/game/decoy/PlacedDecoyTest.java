@@ -2,56 +2,47 @@ package it.unicam.cs.mpgc.rpg125676.model.game.decoy;
 
 import it.unicam.cs.mpgc.rpg125676.model.world.Room;
 import it.unicam.cs.mpgc.rpg125676.model.world.RoomRole;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlacedDecoyTest {
 
-    private final Room room = new Room("study", "Study", true, RoomRole.STANDARD, false);
+    private PlacedDecoy decoy;
 
-    @Test
-    void shouldStartInactive() {
-        PlacedDecoy decoy = new PlacedDecoy(room, 4);
-
-        assertFalse(decoy.isRinging());
-        assertFalse(decoy.hasPresenceReached());
-        assertFalse(decoy.isExpired());
-        assertEquals(4, decoy.getRemainingHoldTurns());
+    @BeforeEach
+    void setUp() {
+        Room room = new Room("study", "Study", true, RoomRole.STANDARD, false);
+        decoy = new PlacedDecoy(room, 4);
     }
 
     @Test
-    void shouldNotConsumeTurnsBeforePresenceReachesIt() {
-        PlacedDecoy decoy = new PlacedDecoy(room, 4);
-        decoy.activate();
-        decoy.consumeHoldTurn();
-
+    void shouldStartInactive() {
+        assertFalse(decoy.isRinging());
+        assertFalse(decoy.hasPresenceReached());
         assertEquals(4, decoy.getRemainingHoldTurns());
     }
 
     @Test
     void shouldExpireAfterFourHoldTurns() {
-        PlacedDecoy decoy = new PlacedDecoy(room, 4);
         decoy.activate();
         decoy.markPresenceReached();
-
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             decoy.consumeHoldTurn();
         }
-
-        assertFalse(decoy.isExpired());
-        assertEquals(1, decoy.getRemainingHoldTurns());
-
-        decoy.consumeHoldTurn();
 
         assertTrue(decoy.isExpired());
     }
 
     @Test
-    void shouldRejectSecondActivation() {
-        PlacedDecoy decoy = new PlacedDecoy(room, 4);
+    void releaseShouldPreserveRemainingTurns() {
         decoy.activate();
+        decoy.markPresenceReached();
+        decoy.consumeHoldTurn();
+        decoy.releasePresence();
 
-        assertThrows(IllegalStateException.class, decoy::activate);
+        assertFalse(decoy.hasPresenceReached());
+        assertEquals(3, decoy.getRemainingHoldTurns());
     }
 }

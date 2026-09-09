@@ -174,7 +174,7 @@ public class GameFactory {
         PathFinder pathFinder = new BfsPathFinder();
         PresenceStateResolver stateResolver = new PresenceStateResolver(state.getSettings().presence());
         PresenceMovementStrategy standardMovement = new ShortestPathPresenceMovementStrategy(pathFinder, stateResolver);
-        PresenceMovementStrategy movement = new DecoyAwarePresenceMovementStrategy(standardMovement);
+        PresenceMovementStrategy movement = new DecoyAwarePresenceMovementStrategy(standardMovement, pathFinder);
         AttentionPolicy attentionPolicy = new StandardAttentionPolicy();
         GameEndEvaluator endEvaluator = new GameEndEvaluator();
         TurnProcessor turnProcessor = new TurnProcessor(state, attentionPolicy, movement, endEvaluator);
