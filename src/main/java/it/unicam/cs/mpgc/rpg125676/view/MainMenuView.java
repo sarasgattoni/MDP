@@ -66,7 +66,7 @@ public class MainMenuView extends StackPane {
         VintageTheme.label(titleTwo, 40, Color.rgb(222, 211, 183), FontWeight.BOLD, false);
         Label caption = new Label("—  THE HOUSE REMEMBERS  —");
         VintageTheme.label(caption, 11, Color.rgb(139, 128, 108), FontWeight.BOLD, false);
-        Label subtitle = new Label("A psychological horror RPG");
+        Label subtitle = new Label("Every sound draws it closer.");
         VintageTheme.label(subtitle, 15, Color.rgb(159, 149, 128), FontWeight.NORMAL, true);
         configureMenuButton(newGameButton, VintageTheme.ButtonTone.PRIMARY);
         configureMenuButton(continueButton, VintageTheme.ButtonTone.SECONDARY);
