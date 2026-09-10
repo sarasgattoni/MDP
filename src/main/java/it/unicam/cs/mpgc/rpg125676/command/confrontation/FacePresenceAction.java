@@ -11,7 +11,7 @@ import java.util.Objects;
 /**
  * Attempts to face the Presence using the player's Composure.
  * The action combines a dice roll with the player's Composure
- * and compares the result with the configured confrontation threshold.
+ * and compares the result with the configured confrontation value.
  * On success, the Presence retreats and its attention is reset.
  * On failure, the player loses Lucidity and gains a future
  * recovery opportunity.
