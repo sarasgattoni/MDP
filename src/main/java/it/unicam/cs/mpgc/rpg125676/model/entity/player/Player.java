@@ -2,7 +2,7 @@ package it.unicam.cs.mpgc.rpg125676.model.entity.player;
 
 import it.unicam.cs.mpgc.rpg125676.model.entity.Entity;
 import it.unicam.cs.mpgc.rpg125676.model.entity.behavior.Movable;
-import it.unicam.cs.mpgc.rpg125676.model.entity.player.inventory.Inventory;
+import it.unicam.cs.mpgc.rpg125676.model.entity.player.inventory.PlayerInventory;
 import it.unicam.cs.mpgc.rpg125676.model.world.Room;
 
 import java.util.Objects;
@@ -19,13 +19,13 @@ public class Player implements Entity, Movable {
 
     private  String name;
     private  PlayerStats stats;
-    private  Inventory inventory;
+    private  PlayerInventory inventory;
     private int maxMemories;
 
     private Room currentRoom;
     private int memoriesFound;
 
-    public Player(String name, PlayerStats stats, Inventory inventory, Room startingRoom, int maxMemories) {
+    public Player(String name, PlayerStats stats, PlayerInventory inventory, Room startingRoom, int maxMemories) {
         if (name == null || name.isBlank()) {throw new IllegalArgumentException("Player name cannot be blank");}
 
         if (maxMemories <= 0) {throw new IllegalArgumentException("Maximum memories must be greater than zero");}
