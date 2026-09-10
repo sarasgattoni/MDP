@@ -1,21 +1,21 @@
 package it.unicam.cs.mpgc.rpg125676.command.confrontation;
 
 import it.unicam.cs.mpgc.rpg125676.command.ActionResult;
+import it.unicam.cs.mpgc.rpg125676.model.entity.player.Player;
 import it.unicam.cs.mpgc.rpg125676.model.game.GameState;
 import it.unicam.cs.mpgc.rpg125676.model.game.dice.DiceRoller;
 import it.unicam.cs.mpgc.rpg125676.model.world.Room;
+import it.unicam.cs.mpgc.rpg125676.model.world.RoomRole;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.random.RandomGenerator;
 
 /**
- * Attempts to hide from the Presence using the player's Caution.
- * The action combines a dice roll with the player's Caution
- * and compares the result with the configured confrontation threshold.
- * On success, the Presence moves to a randomly selected adjacent
- * room and its attention is reduced. On failure, the player loses
- * Lucidity and gains a future recovery opportunity.
+ * Attempts to escape from the Presence using Caution.
+ * On success, the player flees to a valid adjacent room while the Presence
+ * remains in the confrontation room. Attention is not modified; on failure,
+ * the player remains in place and loses Lucidity.
  */
 public class HideAction extends AbstractConfrontationAction {
 
@@ -23,16 +23,13 @@ public class HideAction extends AbstractConfrontationAction {
     private final RandomGenerator random;
 
     /**
-     * Creates a Hide action using the supplied dice roller.
-     * The default random generator is used to select the room
-     * to which the Presence moves after a successful hide.
+     * Creates a Hide action using the specified dice roller.
      *
      * @param diceRoller dice roller used for the Caution check
      * @throws NullPointerException if diceRoller is null
      */
     public HideAction(DiceRoller diceRoller) {
         this.diceRoller = Objects.requireNonNull(diceRoller);
-
         this.random = RandomGenerator.getDefault();
     }
 
@@ -42,35 +39,53 @@ public class HideAction extends AbstractConfrontationAction {
     }
 
     /**
-     * Resolves the attempt to hide from the Presence.
-     * The dice roll is added to the player's Caution and compared
-     * with the configured value. On success, the Presence is moved
-     * to a random adjacent room and its attention is reduced.
-     * On failure, the configured Lucidity damage is applied and
-     * a recovery opportunity is enabled.
+     * Resolves the attempt to escape from the Presence.
+     * A successful Caution check moves the player to a random valid adjacent
+     * room and ends the confrontation. The Presence and its Attention remain
+     * unchanged; a failed check damages the player's Lucidity and enables
+     * one future Catch Breath recovery opportunity.
      *
      * @param state current game state
-     * @return a silent success or failure result according to the check
+     * @return result of the hiding attempt
      */
     @Override
     protected ActionResult perform(GameState state) {
+        Player player = state.getPlayer();
+
         int roll = diceRoller.roll();
-        int total = roll + state.getPlayer().getStats().getCaution();
+        int total = roll + player.getStats().getCaution();
         int threshold = state.getSettings().confrontation().hideThreshold();
+
         if (total >= threshold) {
-            List<Room> adjacentRooms = List.copyOf(state.getHouse().getAdjacentRooms(state.getPresence().getCurrentRoom()));
-            Room destination = adjacentRooms.get(random.nextInt(adjacentRooms.size()));
-            state.getPresence().moveTo(destination);
-            if (!state.isDecoyActive()) {
-                state.getPresence().decreaseAttention(state.getSettings().confrontation().hideAttentionDecrease());
+            List<Room> escapeRooms = findEscapeRooms(state, player);
+            if (escapeRooms.isEmpty()) {
+                throw new IllegalStateException("The player has no valid room to escape to");
             }
+            Room destination = escapeRooms.get(random.nextInt(escapeRooms.size()));
+            player.moveTo(destination);
+            destination.markAsVisited();
             state.synchronizePhaseWithPositions();
-
-            return ActionResult.silentSuccess("You disappeared from sight. " + "The Presence moves away.");
+            return ActionResult.silentSuccess("You slip away before the Presence can reach you. " + "You escaped to " + destination.getName() + ".");
         }
-        state.getPlayer().getStats().loseLucidity(state.getSettings().confrontation().damage());
+        player.getStats().loseLucidity(state.getSettings().confrontation().damage());
         state.enableRecovery();
+        return ActionResult.silentFailure("You failed to hide. The Presence finds you. You lose " + state.getSettings().confrontation().damage() + " Lucidity.");
+    }
 
-        return ActionResult.silentFailure("You failed to hide. " + "The Presence finds you. You lose " + state.getSettings().confrontation().damage() + " Lucidity.");
+    /**
+     * Finds adjacent rooms that the player may enter while escaping.
+     * The final locked room is excluded until all memories have been
+     * recovered, preserving the normal movement restriction.
+     *
+     * @param state current game state
+     * @param player player attempting to escape
+     * @return valid adjacent escape rooms
+     */
+    private List<Room> findEscapeRooms(GameState state, Player player) {
+        return state.getHouse()
+                .getAdjacentRooms(player.getCurrentRoom())
+                .stream()
+                .filter(room -> room.getRole() != RoomRole.FINAL || player.hasAllMemories())
+                .toList();
     }
 }

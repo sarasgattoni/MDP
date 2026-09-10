@@ -127,7 +127,7 @@ public class ActionPanel extends VBox {
         Label warning = new Label("THE PRESENCE IS HERE");
         warning.setWrapText(true);
         VintageTheme.label(warning, 17, Color.rgb(197, 109, 98), FontWeight.BOLD, false);
-        Label description = new Label("There is nowhere to run.");
+        Label description = new Label("Slip away before it's too late.");
         description.setWrapText(true);
         VintageTheme.label(description, 12, Color.rgb(170, 130, 122), FontWeight.NORMAL, true);
         confrontationBox.getChildren().addAll(warning, description, faceButton, hideButton);

@@ -85,8 +85,7 @@ public record GameSettings(
                         8,
                         7,
                         2,
-                        3,
-                        4
+                        3
                 ),
                 new DecoyConfig(4),
                 new ContentConfig(
@@ -172,21 +171,18 @@ public record GameSettings(
     public record SearchConfig(int silentSearchThreshold) implements Serializable {}
 
     /**
-     * Defines the rules used during confrontations with the Presence.
+     * Contains the balance settings used during confrontations.
      *
-     * @param facePresenceThreshold minimum total required to successfully
-     *                              face the Presence
-     * @param hideThreshold minimum total required to hide successfully
-     * @param damage lucidity lost after a failed confrontation
-     * @param retreatSteps maximum number of rooms crossed when the Presence retreats
-     * @param hideAttentionDecrease attention removed after a successful hide
+     * @param facePresenceThreshold minimum Composure check required to face the Presence
+     * @param hideThreshold minimum Caution check required to hide
+     * @param damage Lucidity lost after a failed confrontation action
+     * @param retreatSteps maximum retreat distance after a successful Face Presence
      */
     public record ConfrontationConfig(
             int facePresenceThreshold,
             int hideThreshold,
             int damage,
-            int retreatSteps,
-            int hideAttentionDecrease
+            int retreatSteps
     ) implements Serializable {}
 
     /**
