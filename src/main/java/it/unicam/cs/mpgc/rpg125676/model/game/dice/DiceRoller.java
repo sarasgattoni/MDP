@@ -1,6 +1,7 @@
 package it.unicam.cs.mpgc.rpg125676.model.game.dice;
 
 import it.unicam.cs.mpgc.rpg125676.model.game.GameSettings;
+
 import java.util.Objects;
 import java.util.random.RandomGenerator;
 
@@ -22,8 +23,6 @@ public class DiceRoller {
      *
      * @param config configuration containing the number of die faces
      * @throws NullPointerException if config is null
-     * @throws IllegalArgumentException if the configured die has fewer
-     *         than two faces
      */
     public DiceRoller(GameSettings.DiceConfig config) {
         Objects.requireNonNull(config);
@@ -36,8 +35,10 @@ public class DiceRoller {
         lastRoll = random.nextInt(1, faces + 1);
         return lastRoll;
     }
+
     public int getLastRoll() {
-        if (lastRoll == 0) {throw new IllegalStateException("The dice has not been rolled yet");
+        if (lastRoll == 0) {
+            throw new IllegalStateException("The dice has not been rolled yet");
         }
         return lastRoll;
     }

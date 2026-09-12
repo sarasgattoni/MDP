@@ -142,17 +142,19 @@ public class GameController {
 
         view.getRoomPanel().appendEvent(result.message());
 
+        boolean showTurnFeedback = result.consumesTurn()
+                && !(action instanceof SpeakNameAction);
         String mainFeedback = null;
         String noiseFeedback = null;
-        if (result.consumesTurn()) {
+        if (showTurnFeedback) {
             mainFeedback = feedbackPresenter.createMainFeedback(action, result, engine.getState(), diceRoller);
-            noiseFeedback = feedbackPresenter.createNoiseFeedback(result, engine.getState(), decoyActiveDuringTurn, decoyRoom, startingPhase);
+            noiseFeedback = feedbackPresenter.createNoiseFeedback(result, decoyActiveDuringTurn, decoyRoom, startingPhase);
         }
 
         resolvePendingDecision();
         refresh();
 
-        if (result.consumesTurn()) {
+        if (showTurnFeedback) {
             feedbackPresenter.showTurnFeedback(mainFeedback, noiseFeedback, result.succeeded());
         }
 

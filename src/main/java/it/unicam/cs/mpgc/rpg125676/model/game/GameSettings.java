@@ -75,9 +75,7 @@ public record GameSettings(
                 new DiceConfig(6),
                 new NoiseConfig(
                         1,
-                        3,
-                        5,
-                        3,
+                        2,
                         1
                 ),
                 new SearchConfig(8),
@@ -152,15 +150,11 @@ public record GameSettings(
      *
      * @param movementNoise noise produced by movement
      * @param searchNoise noise produced by a noisy search
-     * @param speakNameNoise noise produced when speaking the Presence name
-     * @param decoyNoise noise produced by an active decoy
      * @param silentTurnAttentionDecrease attention removed after a silent turn
      */
     public record NoiseConfig(
             int movementNoise,
             int searchNoise,
-            int speakNameNoise,
-            int decoyNoise,
             int silentTurnAttentionDecrease
     ) implements Serializable {}
 

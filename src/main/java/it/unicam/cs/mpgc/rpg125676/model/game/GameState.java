@@ -161,12 +161,10 @@ public class GameState implements Serializable {
     }
 
     /**
-     * Updates the current game phase according to the positions
-     * of the player and the Presence.
-     * If both entities occupy the same room, the phase becomes
-     * {@link GamePhase#CONFRONTATION}; otherwise it becomes
-     * {@link GamePhase#EXPLORATION}.
-     * No update is performed after the game has ended.
+     * Validates that the specified room belongs to the current house.
+     *
+     * @param room room to validate
+     * @throws IllegalArgumentException if the room does not belong to the house
      */
     private void validateEntityRoom(Room room) {
         if (!house.getRooms().contains(room)) {
@@ -214,15 +212,14 @@ public class GameState implements Serializable {
     }
 
     /**
-     * Registers the specified decoy as the currently active decoy.
-     * Only one decoy may be active at a time.
-     * @param decoy decoy to activate
+     * Registers the specified decoy as the currently placced decoy.
+     * @param decoy decoy to place
      * @throws NullPointerException if decoy is null
      * @throws IllegalStateException if another decoy is already active
      */
     public void placeDecoy(PlacedDecoy decoy) {
         Objects.requireNonNull(decoy);
-        if (placedDecoy != null) {throw new IllegalStateException("A decoy is already active");}
+        if (placedDecoy != null) {throw new IllegalStateException("A decoy is already placed.");}
         placedDecoy = decoy;
     }
 

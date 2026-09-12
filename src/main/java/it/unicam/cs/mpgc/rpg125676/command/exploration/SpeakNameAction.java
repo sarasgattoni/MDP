@@ -10,8 +10,7 @@ import it.unicam.cs.mpgc.rpg125676.model.world.RoomRole;
  * Performs the final action required to win the game.
  * The Presence's name can only be spoken inside the final room
  * after the player has recovered all required memories.
- * A successful execution immediately marks the game as won
- * and generates the configured Speak Name noise.
+ * A successful execution immediately marks the game as won.
  */
 public class SpeakNameAction extends AbstractExplorationAction {
 
@@ -38,8 +37,6 @@ public class SpeakNameAction extends AbstractExplorationAction {
             return ActionResult.rejected("You still do not know the Presence's identity.");
         }
         state.win();
-        int noise = state.getSettings().noise().speakNameNoise();
-        return ActionResult.success(noise, room, "You spoke the name of the Presence. " + "The house finally falls silent."
-        );
+        return ActionResult.silentSuccess("You spoke the name of the Presence. " + "The house finally falls silent.");
     }
 }

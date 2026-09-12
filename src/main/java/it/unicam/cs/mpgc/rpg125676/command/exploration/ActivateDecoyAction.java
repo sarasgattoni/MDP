@@ -6,8 +6,9 @@ import it.unicam.cs.mpgc.rpg125676.model.game.decoy.PlacedDecoy;
 
 /**
  * Activates a previously placed decoy.
- * Activation is silent for the player, while the decoy starts producing
- * noise from the room in which it was placed.
+ * Activation is silent for the player; once activated, the decoy attracts
+ * the Presence and temporarily suspends normal Attention changes
+ * until its effect expires.
  */
 public class ActivateDecoyAction extends AbstractExplorationAction {
 

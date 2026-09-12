@@ -102,17 +102,14 @@ public class PlayerStats implements Serializable {
      * Increases the player's caution.
      * The value is capped at the maximum attribute value defined
      * by the player configuration.
-     * @param amount amount to add to composure
+     * @param amount amount to add to caution
      *
      * @throws IllegalArgumentException if {@code amount} is negative
      */
     public void increaseCaution(int amount) {
         validatePositiveAmount(amount);
 
-        caution = Math.min(
-                config.maxAttribute(),
-                caution + amount
-        );
+        caution = Math.min(config.maxAttribute(), caution + amount);
     }
 
     /**

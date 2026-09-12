@@ -64,7 +64,7 @@ public class MainMenuView extends StackPane {
         Label titleTwo = new Label("THAT LISTENS");
         VintageTheme.label(titleOne, 40, Color.rgb(222, 211, 183), FontWeight.BOLD, false);
         VintageTheme.label(titleTwo, 40, Color.rgb(222, 211, 183), FontWeight.BOLD, false);
-        Label caption = new Label("—  THE HOUSE REMEMBERS  —");
+        Label caption = new Label("—  THE WALLS REMEMBER.  —");
         VintageTheme.label(caption, 11, Color.rgb(139, 128, 108), FontWeight.BOLD, false);
         Label subtitle = new Label("Every sound draws it closer.");
         VintageTheme.label(subtitle, 15, Color.rgb(159, 149, 128), FontWeight.NORMAL, true);
@@ -72,9 +72,7 @@ public class MainMenuView extends StackPane {
         configureMenuButton(continueButton, VintageTheme.ButtonTone.SECONDARY);
         configureMenuButton(leaderboardButton, VintageTheme.ButtonTone.SECONDARY);
         configureMenuButton(exitButton, VintageTheme.ButtonTone.DANGER);
-        Label quote = new Label("Some doors should remain closed.");
-        VintageTheme.label(quote, 12, Color.rgb(117, 108, 94), FontWeight.NORMAL, true);
-        card.getChildren().addAll(titleOne, titleTwo, caption, spacer(20), subtitle, spacer(25), newGameButton, continueButton, leaderboardButton, exitButton, spacer(15), quote);
+        card.getChildren().addAll(titleOne, titleTwo, caption, spacer(20), subtitle, spacer(25), newGameButton, continueButton, leaderboardButton, exitButton, spacer(15));
         return card;
     }
 
@@ -95,22 +93,28 @@ public class MainMenuView extends StackPane {
             return;
         }
 
-        ImageView background = new ImageView(new Image(resource.toExternalForm(), true));
+        Image image = new Image(resource.toExternalForm());
+        ImageView background = new ImageView(image);
+
         background.setPreserveRatio(false);
         background.setSmooth(true);
         background.fitWidthProperty().bind(widthProperty());
         background.fitHeightProperty().bind(heightProperty());
+
         ColorAdjust adjustment = new ColorAdjust();
-        adjustment.setSaturation(-0.55);
-        adjustment.setBrightness(-0.20);
-        adjustment.setContrast(0.12);
-        SepiaTone sepia = new SepiaTone(0.45);
+        adjustment.setSaturation(-0.25);
+        adjustment.setBrightness(-0.05);
+        adjustment.setContrast(0.08);
+
+        SepiaTone sepia = new SepiaTone(0.25);
         sepia.setInput(adjustment);
         background.setEffect(sepia);
+
         Region overlay = new Region();
-        overlay.setBackground(VintageTheme.solid(Color.rgb(0, 0, 0, 0.48)));
+        overlay.setBackground(VintageTheme.solid(Color.rgb(0, 0, 0, 0.25)));
         overlay.maxWidthProperty().bind(widthProperty());
         overlay.maxHeightProperty().bind(heightProperty());
+
         getChildren().addAll(background, overlay);
     }
 

@@ -13,7 +13,7 @@ public enum PlayerAttribute {
     COMPOSURE,
 
     /**
-     * Represents the player's ability to act carefully and silently.
+     * Represents the player's ability to search silently and escape from the presence.
      */
     CAUTION
 }

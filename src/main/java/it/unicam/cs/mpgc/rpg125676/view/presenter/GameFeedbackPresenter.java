@@ -62,35 +62,24 @@ public class GameFeedbackPresenter {
      * instead of displaying the normal noise-based Attention feedback.
      *
      * @param result result of the player's action
-     * @param state current game state
      * @param decoyActive whether the decoy produces noise during the turn
      * @param decoyRoom room containing the ringing decoy, if present
      * @param startingPhase phase in which the turn started
      * @return noise feedback message
      */
-    public String createNoiseFeedback(ActionResult result, GameState state, boolean decoyActive, Room decoyRoom, GamePhase startingPhase) {
+    public String createNoiseFeedback(ActionResult result, boolean decoyActive, Room decoyRoom, GamePhase startingPhase) {
         if (decoyActive) {
             String location = decoyRoom == null ? "" : " in " + decoyRoom.getName();
             return "DECOY RINGING" + location + " — Attention frozen.";
         }
         if (startingPhase == GamePhase.CONFRONTATION) {
-            if (decoyActive && decoyRoom != null) {
-                return "Alarm clock rings in " + decoyRoom.getName() + " — Attention rule suspended during confrontation.";
-            }
             return "CONFRONTATION — Attention rule suspended.";
         }
-        int totalNoise = result.noise();
-        if (decoyActive) {
-            totalNoise += state.getSettings().noise().decoyNoise();
-        }
-        if (totalNoise == 0) {
+        if (result.noise() == 0) {
             return "SILENT — Attention decreases.";
         }
-        String message = "NOISE +" + totalNoise;
-        if (decoyActive && decoyRoom != null) {
-            message += " — Alarm clock rings in " + decoyRoom.getName();
-        }
-        return message;
+
+        return "NOISE +" + result.noise();
     }
 
     public void showTurnFeedback(String main, String secondary, boolean success) {

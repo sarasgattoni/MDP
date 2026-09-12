@@ -46,6 +46,6 @@ public class PlaceDecoyAction extends AbstractExplorationAction {
         PlacedDecoy placedDecoy = new PlacedDecoy(player.getCurrentRoom(), state.getSettings().decoy().holdTurns());
         state.placeDecoy(placedDecoy);
 
-        return ActionResult.silentSuccess("You placed the alarm clock in " + player.getCurrentRoom().getName() + ". It will start ringing next turn.");
+        return ActionResult.silentSuccess("You placed the alarm clock in " + player.getCurrentRoom().getName());
     }
 }

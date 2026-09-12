@@ -118,11 +118,11 @@ public class Presence implements Entity, Movable {
     }
 
     /**
-     * Increases the attention level by the specified amount.
+     * Decreases the attention level by the specified amount.
      *
-     * The resulting value cannot exceed the configured maximum attention.
+     * The resulting value cannot exceed the configured minimum attention.
      *
-     * @param amount amount of attention to add
+     * @param amount amount of attention to detract
      * @throws IllegalArgumentException if amount is negative
      */
     public void decreaseAttention(int amount) {
