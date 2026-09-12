@@ -1,0 +1,22 @@
+# Gradle
+.gradle/
+build/
+
+# IntelliJ IDEA
+.idea/*
+!.idea/.gitignore
+!.idea/gradle.xml
+!.idea/misc.xml
+!.idea/vcs.xml
+
+*.iml
+
+# Runtime data
+data/
+
+# Java
+*.class
+
+# OS
+.DS_Store
+Thumbs.db
