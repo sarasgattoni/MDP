@@ -136,3 +136,22 @@ Le proposte fornite dall'AI sono state comprese, verificate, adattate e testate 
 
 Le immagini utilizzate per rappresentare la casa e le stanze sono state selezionate e successivamente **rielaborate con strumenti di AI** per uniformarne stile, atmosfera e risoluzione.
 
+L'intervento ha riguardato soprattutto:
+- aumento della risoluzione;
+- adattamento delle immagini all'utilizzo nell'interfaccia.
+### Fonti
+| Asset / ambiente | Fonte della reference | Utilizzo |
+| --- | --- | --- |
+| Living Room | [Pinterest](https://pin.it/W7jhvMGNX) | Reference visiva successivamente rielaborata |
+| Hallway | [Pinterest](https://pin.it/5RHPfyLhs) | Reference visiva successivamente rielaborata |
+| Entrance | Adobe Stock, asset `#2027131760` | Reference visiva successivamente rielaborata |
+| Parents Bedroom | [Pinterest](https://pin.it/3Fx998OKg) | Reference visiva successivamente rielaborata |
+| Atrio | [Pinterest](https://pin.it/4hb9aaHEB) | Reference visiva successivamente rielaborata |
+| Pantry | [Pinterest](https://pin.it/4DBjUYhJs) | Reference visiva successivamente rielaborata |
+| Child bedroom | [Pinterest](https://pin.it/XILy5F1Me) | Reference visiva successivamente rielaborata |
+| Study | [Pinterest](https://pin.it/JrekJZqoR) | Reference visiva successivamente rielaborata |
+| Kitchen | [Pinterest](https://pin.it/4wEYoxDRT) | Reference visiva successivamente rielaborata |
+| Locked room | [Pinterest](https://pin.it/4zvUethTk) | Reference visiva successivamente rielaborata |
+| Villa | [Magnific](https://www.magnific.com/free-ai-image/haunted-house-with-spooky-aesthetic-cinematic-style_236211023.htm#fromView=keyword&page=3&position=9&uuid=861e4fc6-30d3-4902-80a4-69d5772be46b&track=ais_hybrid&query=Horror+house+png) | Reference visiva successivamente rielaborata |
+| Stairs | [Pinterest](https://pin.it/7iBPFSq2Y) | Reference visiva successivamente rielaborata |
+| Bathroom | [Pinterest](https://pin.it/4BBaaay7r) | Reference visiva successivamente rielaborata |
